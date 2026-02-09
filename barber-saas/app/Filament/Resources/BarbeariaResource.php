@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
-
+use App\Helpers\FormatHelper;
 use App\Filament\Resources\BarbeariaResource\Pages;
 use App\Filament\Resources\BarbeariaResource\RelationManagers;
 use App\Models\Barbearia;
@@ -223,9 +223,9 @@ class BarbeariaResource extends Resource
                     ->searchable()
                     ->sortable(),
                 
-                TextColumn::make('telefone')
+                 TextColumn::make('telefone')
                     ->label('Telefone')
-                    ->formatStateUsing(fn ($state) => formatarTelefone($state))
+                    ->formatStateUsing(fn ($state) => FormatHelper::formatarTelefone($state))
                     ->searchable(),
                 
                 TextColumn::make('email')
