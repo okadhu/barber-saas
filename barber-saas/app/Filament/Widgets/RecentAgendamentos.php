@@ -7,7 +7,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Database\Eloquent\Builder;
-
+use App\Helpers\StatusHelper;
 class RecentAgendamentos extends BaseWidget
 {
     protected int | string | array $columnSpan = 'full';
@@ -44,8 +44,8 @@ class RecentAgendamentos extends BaseWidget
                     ->searchable(),
                 
                 Tables\Columns\BadgeColumn::make('status')
-                    ->formatStateUsing(fn ($state) => getStatusLabel($state))
-                    ->color(fn ($state) => getStatusColor($state)),
+    ->formatStateUsing(fn ($state) => StatusHelper::getStatusLabel($state))
+    ->color(fn ($state) => StatusHelper::getStatusColor($state)),
                 
                 Tables\Columns\TextColumn::make('valor')
                     ->money('BRL')
