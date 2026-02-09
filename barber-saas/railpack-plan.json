@@ -22,13 +22,7 @@
   "composer": {
     "install": true,
     "optimize-autoloader": true,
-    "no-scripts": false,
-    "post-install-cmd": [
-      "@php artisan optimize:clear",
-      "@php artisan package:discover --ansi",
-      "@php artisan filament:upgrade",
-      "@php artisan vendor:publish --tag=filament-assets --force"
-    ]
+    "no-scripts": false
   },
   "node": "22.22.0",
   "npm": {
