@@ -16,6 +16,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Helpers\StatusHelper;
 
 class AgendamentoResource extends Resource
 {
@@ -179,10 +180,10 @@ class AgendamentoResource extends Resource
                     ->sortable()
                     ->toggleable(),
                 
-                Tables\Columns\BadgeColumn::make('status')
+                  Tables\Columns\BadgeColumn::make('status')
                     ->label('Status')
-                    ->formatStateUsing(fn ($state) => getStatusLabel($state))
-                    ->color(fn ($state) => getStatusColor($state)),
+                    ->formatStateUsing(fn ($state) => StatusHelper::getStatusLabel($state))
+                    ->color(fn ($state) => StatusHelper::getStatusColor($state)),
                 
                 Tables\Columns\TextColumn::make('valor')
                     ->label('Valor')
