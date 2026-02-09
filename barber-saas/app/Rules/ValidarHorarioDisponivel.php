@@ -21,26 +21,27 @@ class ValidarHorarioDisponivel implements ValidationRule
         $horaInicio = $value;
         $horaFim = date('H:i', strtotime("+{$this->duracao} minutes", strtotime($horaInicio)));
         
+        // Consulta para verificar horários conflitantes
         $query = Agendamento::where('barbearia_id', $this->barbeariaId)
             ->where('data', $this->data)
             ->where(function ($q) use ($horaInicio, $horaFim) {
-                $q->where(function ($q) use ($horaInicio, $horaFim) {
-                    $q->where('hora_inicio', '<', $horaFim)
-                      ->where('hora_fim', '>', $horaInicio);
+                $q->where(function ($q2) use ($horaInicio, $horaFim) {
+                    $q2->where('hora_inicio', '<', $horaFim)
+                       ->where('hora_fim', '>', $horaInicio);
                 });
             })
-            ->whereNotIn('status', ['cancelado', 'nao_compareceu']);
-        
+            ->where('status', '!=', 'cancelado');
+
         if ($this->barbeiroId) {
             $query->where('barbeiro_id', $this->barbeiroId);
         }
-        
+
         if ($this->agendamentoId) {
             $query->where('id', '!=', $this->agendamentoId);
         }
-        
+
         if ($query->exists()) {
-            $fail('Este horário já está ocupado. Por favor, escolha outro horário.');
+            $fail('Este horário já está agendado. Por favor, escolha outro horário.');
         }
     }
 }

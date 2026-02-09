@@ -7,6 +7,7 @@ use Filament\Actions;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Infolists;
 use Filament\Infolists\Infolist;
+use App\Helpers\FormatHelper;
 
 class ViewBarbearia extends ViewRecord
 {
@@ -14,15 +15,15 @@ class ViewBarbearia extends ViewRecord
 
     protected function getHeaderActions(): array
     {
-        return [
-            Actions\EditAction::make(),
-            Actions\DeleteAction::make(),
-            Actions\Action::make('estatisticas')
-                ->label('Estatísticas')
-                ->icon('heroicon-o-chart-bar')
-                ->url(fn () => BarbeariaResource::getUrl('estatisticas', ['record' => $this->record])),
-        ];
-    }
+    return [
+        Actions\EditAction::make(),
+        Actions\DeleteAction::make(),
+        Actions\Action::make('estatisticas')
+            ->label('Estatísticas')
+            ->icon('heroicon-o-chart-bar')
+            ->url(fn () => BarbeariaResource::getUrl('estatisticas', ['record' => $this->record])),
+    ];
+}
 
     public function infolist(Infolist $infolist): Infolist
     {
@@ -30,40 +31,32 @@ class ViewBarbearia extends ViewRecord
             ->schema([
                 Infolists\Components\Section::make('Informações da Barbearia')
                     ->schema([
-                        Infolists\Components\Split::make([
-                            Infolists\Components\ImageEntry::make('logo')
-                                ->label('Logo')
-                                ->circular()
-                                ->defaultImageUrl(fn ($record) => 'https://ui-avatars.com/api/?name=' . urlencode($record->nome) . '&color=FFFFFF&background=111827')
-                                ->columnSpan(1),
-                            
-                            Infolists\Components\Grid::make(2)
-                                ->schema([
-                                    Infolists\Components\TextEntry::make('nome')
-                                        ->label('Nome')
-                                        ->size('lg')
-                                        ->weight('bold'),
-                                    
-                                    Infolists\Components\TextEntry::make('cnpj')
-                                        ->label('CNPJ')
-                                        ->formatStateUsing(fn ($state) => formatarCNPJ($state)),
-                                    
-                                    Infolists\Components\TextEntry::make('telefone')
-                                        ->label('Telefone')
-                                        ->formatStateUsing(fn ($state) => formatarTelefone($state)),
-                                    
-                                    Infolists\Components\TextEntry::make('email')
-                                        ->label('E-mail'),
-                                    
-                                    Infolists\Components\IconEntry::make('ativo')
-                                        ->label('Status')
-                                        ->boolean()
-                                        ->trueIcon('heroicon-o-check-circle')
-                                        ->trueColor('success')
-                                        ->falseIcon('heroicon-o-x-circle')
-                                        ->falseColor('danger'),
-                                ])->columnSpan(2),
-                        ]),
+                        Infolists\Components\Grid::make(2)
+                            ->schema([
+                                Infolists\Components\TextEntry::make('nome')
+                                    ->label('Nome')
+                                    ->size('lg')
+                                    ->weight('bold'),
+                                
+                                Infolists\Components\TextEntry::make('cnpj')
+                                    ->label('CNPJ')
+                                    ->formatStateUsing(fn ($state) => FormatHelper::formatarCNPJ($state)),
+                                
+                                Infolists\Components\TextEntry::make('telefone')
+                                    ->label('Telefone')
+                                    ->formatStateUsing(fn ($state) => FormatHelper::formatarTelefone($state)),
+                                
+                                Infolists\Components\TextEntry::make('email')
+                                    ->label('E-mail'),
+                                
+                                Infolists\Components\IconEntry::make('ativo')
+                                    ->label('Status')
+                                    ->boolean()
+                                    ->trueIcon('heroicon-o-check-circle')
+                                    ->trueColor('success')
+                                    ->falseIcon('heroicon-o-x-circle')
+                                    ->falseColor('danger'),
+                            ])->columnSpan(2),
                     ]),
                 
                 Infolists\Components\Section::make('Endereço')

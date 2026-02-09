@@ -10,29 +10,26 @@ class FormatHelper
             return '-';
         }
         
-        // Remove caracteres não numéricos
         $telefone = preg_replace('/[^0-9]/', '', $telefone);
-        
-        // Formatação para telefones brasileiros
         $length = strlen($telefone);
         
-        if ($length === 11) { // Celular com DDD (11 91234-5678)
+        if ($length === 11) {
             return '(' . substr($telefone, 0, 2) . ') ' . 
                    substr($telefone, 2, 5) . '-' . 
                    substr($telefone, 7);
-        } elseif ($length === 10) { // Fixo com DDD (11 1234-5678)
+        } elseif ($length === 10) {
             return '(' . substr($telefone, 0, 2) . ') ' . 
                    substr($telefone, 2, 4) . '-' . 
                    substr($telefone, 6);
-        } elseif ($length === 9) { // Celular sem DDD (91234-5678)
+        } elseif ($length === 9) {
             return substr($telefone, 0, 5) . '-' . 
                    substr($telefone, 5);
-        } elseif ($length === 8) { // Fixo sem DDD (1234-5678)
+        } elseif ($length === 8) {
             return substr($telefone, 0, 4) . '-' . 
                    substr($telefone, 4);
         }
         
-        return $telefone; // Retorna original se não corresponder
+        return $telefone;
     }
     
     public static function formatarCPF($cpf): string
@@ -70,5 +67,22 @@ class FormatHelper
         }
         
         return $cnpj;
+    }
+    
+    // ADICIONE ESTE MÉTODO
+    public static function formatarCEP($cep): string
+    {
+        if (empty($cep)) {
+            return '-';
+        }
+        
+        $cep = preg_replace('/[^0-9]/', '', $cep);
+        
+        if (strlen($cep) === 8) {
+            return substr($cep, 0, 5) . '-' . 
+                   substr($cep, 5);
+        }
+        
+        return $cep;
     }
 }

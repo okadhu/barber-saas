@@ -89,6 +89,13 @@ class AgendamentoResource extends Resource
                                 if ($servico) {
                                     $set('valor', $servico->preco);
                                     $set('duracao', $servico->duracao);
+                                    // Calcula hora_fim automaticamente
+                                    if ($get('hora_inicio')) {
+                                        $horaFim = \Carbon\Carbon::parse($get('hora_inicio'))
+                                            ->addMinutes($servico->duracao)
+                                            ->format('H:i');
+                                        $set('hora_fim', $horaFim);
+                                    }
                                 }
                             }),
                         
@@ -99,8 +106,13 @@ class AgendamentoResource extends Resource
                                 if (!$barbeariaId) {
                                     return [];
                                 }
-                                $barbearia = Barbearia::find($barbeariaId);
-                                return $barbearia ? $barbearia->barbeiros()->pluck('name', 'id') : [];
+                                
+                                // CORREÇÃO AQUI: Usar uma query mais específica
+                                return User::whereHas('barbearias', function ($query) use ($barbeariaId) {
+                                    $query->where('barbearia_id', $barbeariaId);
+                                })
+                                ->select('id', 'name') // Selecionar explicitamente as colunas
+                                ->pluck('name', 'id');
                             })
                             ->required()
                             ->searchable(),
@@ -115,7 +127,26 @@ class AgendamentoResource extends Resource
                             ->label('Hora Início')
                             ->required()
                             ->seconds(false)
-                            ->rule(new ValidarHorarioDisponivel()),
+                            ->live()
+                            ->afterStateUpdated(function ($state, $set, $get) {
+                                if ($state && $get('duracao')) {
+                                    $horaFim = \Carbon\Carbon::parse($state)
+                                        ->addMinutes($get('duracao'))
+                                        ->format('H:i');
+                                    $set('hora_fim', $horaFim);
+                                }
+                            })
+                            ->rules([
+                                function ($get) {
+                                    return new ValidarHorarioDisponivel(
+                                        barbeariaId: $get('barbearia_id'),
+                                        data: $get('data'),
+                                        duracao: $get('duracao') ?? 30,
+                                        barbeiroId: $get('barbeiro_id'),
+                                        agendamentoId: $get('id') // para edição
+                                    );
+                                }
+                            ]),
                         
                         Forms\Components\Hidden::make('hora_fim'),
                         Forms\Components\Hidden::make('valor'),
@@ -180,7 +211,7 @@ class AgendamentoResource extends Resource
                     ->sortable()
                     ->toggleable(),
                 
-                  Tables\Columns\BadgeColumn::make('status')
+                Tables\Columns\BadgeColumn::make('status')
                     ->label('Status')
                     ->formatStateUsing(fn ($state) => StatusHelper::getStatusLabel($state))
                     ->color(fn ($state) => StatusHelper::getStatusColor($state)),
@@ -210,11 +241,12 @@ class AgendamentoResource extends Resource
                 Tables\Filters\SelectFilter::make('barbeiro_id')
                     ->label('Barbeiro')
                     ->options(function () {
-                        return User::whereIn('id', function ($query) {
+                        // CORREÇÃO AQUI também: especificar a tabela
+                        return User::whereIn('users.id', function ($query) {
                             $query->select('barbeiro_id')
                                   ->from('agendamentos')
                                   ->groupBy('barbeiro_id');
-                        })->pluck('name', 'id');
+                        })->pluck('users.name', 'users.id');
                     })
                     ->searchable(),
                 Tables\Filters\Filter::make('data')

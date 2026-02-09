@@ -9,7 +9,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-
+use App\Helpers\StatusHelper;
 class AgendamentosRelationManager extends RelationManager
 {
     protected static string $relationship = 'agendamentos';
@@ -57,8 +57,8 @@ class AgendamentosRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('barbeiro.name')
                     ->label('Barbeiro'),
                 Tables\Columns\BadgeColumn::make('status')
-                    ->formatStateUsing(fn ($state) => getStatusLabel($state))
-                    ->color(fn ($state) => getStatusColor($state)),
+                    ->formatStateUsing(fn ($state) => StatusHelper::getStatusLabel($state))
+                    ->color(fn ($state) => StatusHelper::getStatusColor($state)),
                 Tables\Columns\TextColumn::make('valor')
                     ->money('BRL'),
             ])

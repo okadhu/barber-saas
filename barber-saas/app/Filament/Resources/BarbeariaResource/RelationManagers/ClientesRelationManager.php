@@ -9,7 +9,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-
+use App\Helpers\FormatHelper;
 class ClientesRelationManager extends RelationManager
 {
     protected static string $relationship = 'clientes';
@@ -42,7 +42,7 @@ class ClientesRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('nome')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('telefone')
-                    ->formatStateUsing(fn ($state) => formatarTelefone($state))
+                    ->formatStateUsing(fn ($state) => FormatHelper::formatarTelefone($state))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
