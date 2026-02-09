@@ -2,22 +2,38 @@
   "name": "barber-saas",
   "platform": "php",
   "php": "8.4",
-  "node": "22.22.0",
-  "extensions": ["intl", "zip", "ctype", "curl", "dom", "fileinfo", "filter", "hash", "mbstring", "openssl", "pcre", "pdo", "session", "tokenizer", "xml"],
+  "extensions": [
+    "intl",
+    "zip",
+    "ctype",
+    "curl",
+    "dom",
+    "fileinfo",
+    "filter",
+    "hash",
+    "mbstring",
+    "openssl",
+    "pcre",
+    "pdo",
+    "session",
+    "tokenizer",
+    "xml"
+  ],
   "composer": {
     "install": true,
     "optimize-autoloader": true,
-    "no-scripts": false
+    "no-scripts": false,
+    "post-install-cmd": [
+      "@php artisan optimize:clear",
+      "@php artisan package:discover --ansi",
+      "@php artisan filament:upgrade",
+      "@php artisan vendor:publish --tag=filament-assets --force"
+    ]
   },
+  "node": "22.22.0",
   "npm": {
     "ci": true,
     "prune": true
-  },
-  "scripts": {
-    "post-build": [
-      "php artisan optimize:clear",
-      "php artisan migrate --force"
-    ]
   },
   "serve": "php artisan serve --host=0.0.0.0 --port=${PORT}"
 }
