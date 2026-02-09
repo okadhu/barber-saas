@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
-
+use App\Helpers\FormatHelper;
 use App\Filament\Resources\ClienteResource\Pages;
 use App\Filament\Resources\ClienteResource\RelationManagers;
 use App\Models\Cliente;
@@ -122,7 +122,7 @@ class ClienteResource extends Resource
                 
                 TextColumn::make('telefone')
                     ->label('Telefone')
-                    ->formatStateUsing(fn ($state) => formatarTelefone($state))
+                    ->formatStateUsing(fn ($state) => FormatHelper::formatarTelefone($state))
                     ->searchable(),
                 
                 TextColumn::make('email')
