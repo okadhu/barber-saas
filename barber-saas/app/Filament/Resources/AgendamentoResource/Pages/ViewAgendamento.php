@@ -7,7 +7,7 @@ use Filament\Actions;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Infolists;
 use Filament\Infolists\Infolist;
-
+use App\Helpers\StatusHelper;
 class ViewAgendamento extends ViewRecord
 {
     protected static string $resource = AgendamentoResource::class;
@@ -109,10 +109,10 @@ class ViewAgendamento extends ViewRecord
                                     ->money('BRL')
                                     ->weight('bold'),
                                 
-                                Infolists\Components\BadgeEntry::make('status')
+                                Infolists\Components\TextEntry::make('status')
                                     ->label('Status')
-                                    ->formatStateUsing(fn ($state) => getStatusLabel($state))
-                                    ->color(fn ($state) => getStatusColor($state)),
+                                    ->formatStateUsing(fn ($state) => StatusHelper::getStatusLabel($state))
+                                    ->color(fn ($state) => StatusHelper::getStatusColor($state)),
                             ]),
                     ]),
                 
